@@ -50,7 +50,7 @@ struct Instruction {
     uint8_t nn;
     uint8_t n;
     uint8_t X, Y;
-    Instruction(uint16_t instruction);
+    Instruction(uint16_t raw);
 
     std::string to_string();
 };
