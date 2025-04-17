@@ -44,7 +44,7 @@ enum class OPP {
 };
 
 struct Instruction {
-    uint16_t instruction;
+    uint16_t raw;
     OPP opp;
     uint16_t nnn;
     uint8_t nn;

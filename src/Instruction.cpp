@@ -6,15 +6,15 @@
 
 using namespace chip8::instruction;
 
-Instruction::Instruction(uint16_t instruction) {
-    uint8_t h = (instruction & 0xF000) >> 12;
-    uint8_t x = (instruction & 0x0F00) >> 8;
-    uint8_t y = (instruction & 0x00F0) >> 4;
-    uint8_t l = (instruction & 0x000F);
-    this->instruction = instruction;
-    this->nnn = instruction & 0x0FFF;
-    this->nn = instruction & 0x00FF;
-    this->n = instruction & 0x000F;
+Instruction::Instruction(uint16_t raw) {
+    uint8_t h = (raw & 0xF000) >> 12;
+    uint8_t x = (raw & 0x0F00) >> 8;
+    uint8_t y = (raw & 0x00F0) >> 4;
+    uint8_t l = (raw & 0x000F);
+    this->raw = raw;
+    this->nnn = raw & 0x0FFF;
+    this->nn = raw & 0x00FF;
+    this->n = raw & 0x000F;
     this->X = x;
     this->Y = y;
 
@@ -179,7 +179,7 @@ std::string Instruction::to_string() {
     std::stringstream ss;
 
     ss << "0x" << std::uppercase << std::setfill('0') << std::setw(4)
-       << std::hex << this->instruction;
+       << std::hex << this->raw;
 
     ss << "\t" << (int)this->nnn;
     ss << "\t" << (int)this->nn;
