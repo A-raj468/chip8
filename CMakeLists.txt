@@ -10,6 +10,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(
   ${PROJECT_NAME}
   ${PROJECT_SOURCE_DIR}/src/main.cpp ${PROJECT_SOURCE_DIR}/src/Instruction.cpp
-  ${PROJECT_SOURCE_DIR}/src/Decoder.cpp ${PROJECT_SOURCE_DIR}/src/CPU.cpp)
+  ${PROJECT_SOURCE_DIR}/src/Decoder.cpp ${PROJECT_SOURCE_DIR}/src/CPU.cpp
+  ${PROJECT_SOURCE_DIR}/src/Display.cpp)
+
+find_package(SDL2 REQUIRED)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
+
+target_link_libraries(${PROJECT_NAME} SDL2::SDL2)

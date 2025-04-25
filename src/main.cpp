@@ -1,8 +1,10 @@
+#include "Display.hpp"
 #include <CPU.hpp>
 #include <Decoder.hpp>
 #include <Instruction.hpp>
 
 #include <array>
+#include <chrono>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
@@ -62,14 +64,30 @@ int main(int argc, char *argv[]) {
 
     chip8::decoder::Decoder decoder(memory, pc);
     chip8::cpu::CPU cpu(memory, pc, I, V, display, delay_timer, sound_timer);
+    chip8::display::Display renderer(display);
+    if (!renderer.init()) {
+        std::cerr << "Failed to initialize SDL!" << std::endl;
+        return 1;
+    }
+
+    const std::chrono::milliseconds timerUpdateInterval(16);
+
+    std::chrono::steady_clock::time_point lastUpdateTime;
+    auto currentTime = std::chrono::steady_clock::now();
 
     while (true) {
         if (pc >= MEMSIZE) {
             break;
         }
         chip8::instruction::Instruction instruction = decoder.fetch();
-        std::cout << instruction.to_string() << std::endl;
         cpu.execute(instruction, keyPressed);
+
+        if (currentTime - lastUpdateTime >= timerUpdateInterval) {
+            updateTimers(delay_timer, sound_timer);
+            lastUpdateTime = currentTime;
+            // Update display
+            renderer.update();
+        }
     }
 
     return 0;
