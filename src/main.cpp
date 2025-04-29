@@ -3,7 +3,6 @@
 #include <Instruction.hpp>
 
 #include <array>
-#include <atomic>
 #include <chrono>
 #include <cstdint>
 #include <fstream>
@@ -19,11 +18,9 @@ uint16_t pc = ROM_START;
 uint16_t I = 0;
 std::array<uint8_t, 16> V = {0};
 std::array<std::array<uint8_t, 64>, 32> display = {{{0}}};
-std::atomic<uint8_t> delay_timer = 0;
-std::atomic<uint8_t> sound_timer = 0;
+uint8_t delay_timer = 0;
+uint8_t sound_timer = 0;
 std::array<bool, 16> keyPressed = {false};
-
-std::atomic<bool> running = true;
 
 int load_rom(const std::string &rom_path) {
     std::ifstream rom(rom_path, std::ios::binary);
@@ -41,17 +38,14 @@ int load_rom(const std::string &rom_path) {
 }
 
 void updateTimers() {
-    while (running) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000 / 60));
-        if (delay_timer > 0) {
-            --delay_timer;
-        }
+    if (delay_timer > 0) {
+        delay_timer--;
+    }
 
-        if (sound_timer > 0) {
-            --sound_timer;
-            if (sound_timer == 0) {
-                // Stop sound here
-            }
+    if (sound_timer > 0) {
+        sound_timer--;
+        if (sound_timer == 0) {
+            // Stop sound here
         }
     }
 }
@@ -70,18 +64,34 @@ int main(int argc, char *argv[]) {
     chip8::decoder::Decoder decoder(memory, pc);
     chip8::cpu::CPU cpu(memory, pc, I, V, display, delay_timer, sound_timer);
 
-    std::thread t(updateTimers);
-    while (running) {
-        if (pc >= MEMSIZE) {
-            running = false;
-            break;
-        }
-        chip8::instruction::Instruction instruction = decoder.fetch();
-        std::cout << instruction.to_string() << std::endl;
-        cpu.execute(instruction, keyPressed);
-    }
+    const int target_fps = 60;
+    const std::chrono::milliseconds frame_duration(1000 / target_fps);
+    const int ips = 600;
 
-    t.join();
+    bool running = true;
+    while (running) {
+        auto start_time = std::chrono::high_resolution_clock::now();
+
+        for (int i = 0; i < ips / target_fps; i++) {
+            if (pc >= MEMSIZE) {
+                running = false;
+                break;
+            }
+            chip8::instruction::Instruction instruction = decoder.fetch();
+            std::cout << instruction.to_string() << std::endl;
+            cpu.execute(instruction, keyPressed);
+        }
+
+        updateTimers();
+
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+            end_time - start_time);
+
+        if (elapsed < frame_duration) {
+            std::this_thread::sleep_for(frame_duration - elapsed);
+        }
+    }
 
     return 0;
 }
