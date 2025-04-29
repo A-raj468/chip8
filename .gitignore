@@ -39,3 +39,4 @@ roms
 
 # cache
 .cache
+.vscode
