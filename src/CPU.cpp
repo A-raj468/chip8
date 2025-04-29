@@ -6,8 +6,8 @@
 namespace chip8::cpu {
 CPU::CPU(std::array<uint8_t, 4096> &memory, uint16_t &pc, uint16_t &I,
          std::array<uint8_t, 16> &V,
-         std::array<std::array<uint8_t, 64>, 32> &display, uint8_t &delay_timer,
-         uint8_t &sound_timer)
+         std::array<std::array<uint8_t, 64>, 32> &display,
+         std::atomic<uint8_t> &delay_timer, std::atomic<uint8_t> &sound_timer)
     : memory(memory), pc(pc), I(I), V(V), display(display),
       delay_timer(delay_timer), sound_timer(sound_timer) {}
 
