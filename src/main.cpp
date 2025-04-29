@@ -1,6 +1,7 @@
 #include <CPU.hpp>
 #include <Decoder.hpp>
 #include <Instruction.hpp>
+#include <Renderer.hpp>
 
 #include <array>
 #include <chrono>
@@ -63,12 +64,18 @@ int main(int argc, char *argv[]) {
 
     chip8::decoder::Decoder decoder(memory, pc);
     chip8::cpu::CPU cpu(memory, pc, I, V, display, delay_timer, sound_timer);
+    chip8::renderer::Renderer renderer(display);
+    if (!renderer.init()) {
+        std::cerr << "Failed to initialize SDL!" << std::endl;
+        return 1;
+    }
 
     const int target_fps = 60;
     const std::chrono::milliseconds frame_duration(1000 / target_fps);
     const int ips = 600;
 
     bool running = true;
+    SDL_Event event;
     while (running) {
         auto start_time = std::chrono::high_resolution_clock::now();
 
@@ -78,11 +85,122 @@ int main(int argc, char *argv[]) {
                 break;
             }
             chip8::instruction::Instruction instruction = decoder.fetch();
-            std::cout << instruction.to_string() << std::endl;
+            /* std::cout << instruction.to_string() << std::endl; */
             cpu.execute(instruction, keyPressed);
         }
 
         updateTimers();
+        renderer.update();
+
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false; // Exit the loop if the user closes the window
+            } else if (event.type == SDL_KEYDOWN) {
+                // Handle key down events
+                switch (event.key.keysym.sym) {
+                case SDLK_1:
+                    keyPressed[0x1] = true;
+                    break;
+                case SDLK_2:
+                    keyPressed[0x2] = true;
+                    break;
+                case SDLK_3:
+                    keyPressed[0x3] = true;
+                    break;
+                case SDLK_4:
+                    keyPressed[0xC] = true;
+                    break;
+                case SDLK_q:
+                    keyPressed[0x4] = true;
+                    break;
+                case SDLK_w:
+                    keyPressed[0x5] = true;
+                    break;
+                case SDLK_e:
+                    keyPressed[0x6] = true;
+                    break;
+                case SDLK_r:
+                    keyPressed[0xD] = true;
+                    break;
+                case SDLK_a:
+                    keyPressed[0x7] = true;
+                    break;
+                case SDLK_s:
+                    keyPressed[0x8] = true;
+                    break;
+                case SDLK_d:
+                    keyPressed[0x9] = true;
+                    break;
+                case SDLK_f:
+                    keyPressed[0xE] = true;
+                    break;
+                case SDLK_z:
+                    keyPressed[0xA] = true;
+                    break;
+                case SDLK_x:
+                    keyPressed[0x0] = true;
+                    break;
+                case SDLK_c:
+                    keyPressed[0xB] = true;
+                    break;
+                case SDLK_v:
+                    keyPressed[0xF] = true;
+                    break;
+                }
+            } else if (event.type == SDL_KEYUP) {
+                // Handle key up events
+                switch (event.key.keysym.sym) {
+                case SDLK_1:
+                    keyPressed[0x1] = false;
+                    break;
+                case SDLK_2:
+                    keyPressed[0x2] = false;
+                    break;
+                case SDLK_3:
+                    keyPressed[0x3] = false;
+                    break;
+                case SDLK_4:
+                    keyPressed[0xC] = false;
+                    break;
+                case SDLK_q:
+                    keyPressed[0x4] = false;
+                    break;
+                case SDLK_w:
+                    keyPressed[0x5] = false;
+                    break;
+                case SDLK_e:
+                    keyPressed[0x6] = false;
+                    break;
+                case SDLK_r:
+                    keyPressed[0xD] = false;
+                    break;
+                case SDLK_a:
+                    keyPressed[0x7] = false;
+                    break;
+                case SDLK_s:
+                    keyPressed[0x8] = false;
+                    break;
+                case SDLK_d:
+                    keyPressed[0x9] = false;
+                    break;
+                case SDLK_f:
+                    keyPressed[0xE] = false;
+                    break;
+                case SDLK_z:
+                    keyPressed[0xA] = false;
+                    break;
+                case SDLK_x:
+                    keyPressed[0x0] = false;
+                    break;
+                case SDLK_c:
+                    keyPressed[0xB] = false;
+                    break;
+                case SDLK_v:
+                    keyPressed[0xF] = false;
+                    break;
+                }
+            }
+        }
 
         auto end_time = std::chrono::high_resolution_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
