@@ -46,14 +46,14 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    std::array<uint8_t, MEMSIZE> memory;
+    std::array<uint8_t, MEMSIZE> memory = {0};
     uint16_t pc = ROM_START;
     uint16_t I = 0;
-    std::array<uint8_t, 16> V;
-    std::array<std::array<uint8_t, 64>, 32> display;
+    std::array<uint8_t, 16> V = {0};
+    std::array<std::array<uint8_t, 64>, 32> display = {0};
     uint8_t delay_timer = 0;
     uint8_t sound_timer = 0;
-    std::array<bool, 16> keyPressed;
+    std::array<bool, 16> keyPressed = {false};
 
     std::string rom_path = argv[1];
     if (load_rom(memory, rom_path) > 0) {

@@ -135,30 +135,39 @@ Instruction::Instruction(uint16_t raw) {
     case 15: {
         switch (y << 4 | l) {
         case (0 << 4 | 7): {
+            this->opp = OPP::TIMER_GET;
             break;
         }
         case (0 << 4 | 10): {
+            this->opp = OPP::KEY_SET;
             break;
         }
         case (1 << 4 | 5): {
+            this->opp = OPP::TIMER_SET;
             break;
         }
         case (1 << 4 | 8): {
+            this->opp = OPP::SOUND_SET;
             break;
         }
         case (1 << 4 | 14): {
+            this->opp = OPP::MEM_ADD;
             break;
         }
         case (2 << 4 | 9): {
+            this->opp = OPP::MEM_SPRITE;
             break;
         }
         case (3 << 4 | 3): {
+            this->opp = OPP::BCD;
             break;
         }
         case (5 << 4 | 5): {
+            this->opp = OPP::MEM_DUMP;
             break;
         }
         case (6 << 4 | 5): {
+            this->opp = OPP::MEM_LOAD;
             break;
         }
         default: {
