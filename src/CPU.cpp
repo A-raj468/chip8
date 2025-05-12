@@ -73,7 +73,7 @@ bool CPU::execute(const instruction::Instruction &instruction,
         V[instruction.X] |= V[instruction.Y];
         break;
     }
-    case instruction::OPP::BOP_ADD: {
+    case instruction::OPP::BOP_AND: {
         V[instruction.X] &= V[instruction.Y];
         break;
     }
@@ -82,22 +82,28 @@ bool CPU::execute(const instruction::Instruction &instruction,
         break;
     }
     case instruction::OPP::MATH_ADD: {
-        V[instruction.X] += V[instruction.Y];
+        uint16_t sum = V[instruction.X] + V[instruction.Y];
+        V[0xF] = (sum > 255) ? 1 : 0;
+        V[instruction.X] = sum & 0xFF;
         break;
     }
     case instruction::OPP::MATH_SUB: {
+        V[0xF] = (V[instruction.X] > V[instruction.Y]) ? 1 : 0;
         V[instruction.X] -= V[instruction.Y];
         break;
     }
     case instruction::OPP::BOP_SR: {
+        V[0xF] = V[instruction.X] & 0x1;
         V[instruction.X] >>= 1;
         break;
     }
     case instruction::OPP::MATH_RSUB: {
+        V[0xF] = (V[instruction.Y] > V[instruction.X]) ? 1 : 0;
         V[instruction.X] = V[instruction.Y] - V[instruction.X];
         break;
     }
     case instruction::OPP::BOP_SL: {
+        V[0xF] = (V[instruction.X] & 0x80) >> 7;
         V[instruction.X] <<= 1;
         break;
     }
@@ -193,13 +199,13 @@ bool CPU::execute(const instruction::Instruction &instruction,
         break;
     }
     case instruction::OPP::MEM_DUMP: {
-        for (int i = 0; i < instruction.X; i++) {
+        for (int i = 0; i <= instruction.X; i++) {
             memory[I + i] = V[i];
         }
         break;
     }
     case instruction::OPP::MEM_LOAD: {
-        for (int i = 0; i < instruction.X; i++) {
+        for (int i = 0; i <= instruction.X; i++) {
             V[i] = memory[I + i];
         }
         break;

@@ -17,7 +17,7 @@ enum class OPP {
     CONST_ADD,
     ASSIG_REG,
     BOP_OR,
-    BOP_ADD,
+    BOP_AND,
     BOP_XOR,
     MATH_ADD,
     MATH_SUB,

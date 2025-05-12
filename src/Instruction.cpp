@@ -68,7 +68,7 @@ Instruction::Instruction(uint16_t raw) {
             break;
         }
         case 2: {
-            this->opp = OPP::BOP_ADD;
+            this->opp = OPP::BOP_AND;
             break;
         }
         case 3: {
