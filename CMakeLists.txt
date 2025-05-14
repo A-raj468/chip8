@@ -11,7 +11,8 @@ add_executable(
   ${PROJECT_NAME}
   ${PROJECT_SOURCE_DIR}/src/main.cpp ${PROJECT_SOURCE_DIR}/src/Instruction.cpp
   ${PROJECT_SOURCE_DIR}/src/Decoder.cpp ${PROJECT_SOURCE_DIR}/src/CPU.cpp
-  ${PROJECT_SOURCE_DIR}/src/Renderer.cpp)
+  ${PROJECT_SOURCE_DIR}/src/Renderer.cpp
+  ${PROJECT_SOURCE_DIR}/src/Chip8.cpp)
 
 find_package(SDL2 REQUIRED)
 
