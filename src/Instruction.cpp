@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-using namespace chip8::instruction;
+using namespace chip8::core;
 
 Instruction::Instruction(uint16_t raw) {
     uint8_t h = (raw & 0xF000) >> 12;

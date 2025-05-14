@@ -5,7 +5,7 @@
 #include <string>
 #include <thread>
 
-namespace chip8::chip8 {
+namespace chip8::core {
 Chip8System::Chip8System()
     : decoder(memory, pc), cpu(memory, pc, display, delay_timer, sound_timer),
       renderer(display) {}
@@ -42,7 +42,7 @@ int Chip8System::run() {
                 running = false;
                 break;
             }
-            instruction::Instruction instruction = decoder.fetch();
+            Instruction instruction = decoder.fetch();
             cpu.execute(instruction, keyPressed);
         }
 
@@ -189,4 +189,4 @@ void Chip8System::register_keys(SDL_Event &event) {
     }
 }
 
-} // namespace chip8::chip8
+} // namespace chip8::core

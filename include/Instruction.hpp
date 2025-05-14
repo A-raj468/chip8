@@ -3,7 +3,8 @@
 
 #include <cstdint>
 #include <string>
-namespace chip8::instruction {
+
+namespace chip8::core {
 enum class OPP {
     CALL,
     DISPLAY_CLEAR,
@@ -50,8 +51,9 @@ struct Instruction {
     uint8_t nn;
     uint8_t n;
     uint8_t X, Y;
+
     Instruction(uint16_t raw);
 
     std::string to_string();
 };
-} // namespace chip8::instruction
+} // namespace chip8::core

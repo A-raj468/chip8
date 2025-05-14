@@ -1,6 +1,6 @@
 #include <Renderer.hpp>
 
-namespace chip8::renderer {
+namespace chip8::frontend {
 Renderer::Renderer(std::array<std::array<uint8_t, 64>, 32> &display)
     : display(display), window(nullptr), renderer(nullptr) {
     clear();
@@ -71,4 +71,4 @@ void Renderer::clear() {
         row.fill(0);
     }
 }
-} // namespace chip8::renderer
+} // namespace chip8::frontend

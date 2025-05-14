@@ -2,28 +2,28 @@
 #pragma once
 
 #include <CPU.hpp>
+#include <Constants.hpp>
 #include <Decoder.hpp>
 #include <Renderer.hpp>
+
 #include <SDL_events.h>
 #include <array>
 #include <cstdint>
 #include <string>
 
-namespace chip8::chip8 {
+namespace chip8::core {
 class Chip8System {
-    static constexpr uint16_t MEMSIZE = 4096;
-    static constexpr uint16_t ROM_START = 0x200;
-
-    std::array<uint8_t, MEMSIZE> memory = {0};
+    std::array<uint8_t, MEM_SIZE> memory = {0};
     uint16_t pc = ROM_START;
-    std::array<std::array<uint8_t, 64>, 32> display = {{{0}}};
+    std::array<std::array<uint8_t, DISPLAY_COLS>, DISPLAY_ROWS> display = {
+        {{0}}};
     uint8_t delay_timer = 0;
     uint8_t sound_timer = 0;
     std::array<bool, 16> keyPressed = {false};
 
-    decoder::Decoder decoder;
-    cpu::CPU cpu;
-    renderer::Renderer renderer;
+    Decoder decoder;
+    CPU cpu;
+    frontend::Renderer renderer;
 
     bool running = false;
 
@@ -37,4 +37,4 @@ class Chip8System {
     int init();
     int run();
 };
-} // namespace chip8::chip8
+} // namespace chip8::core

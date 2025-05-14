@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <array>
 
-namespace chip8::renderer {
+namespace chip8::frontend {
 class Renderer {
   private:
     std::array<std::array<uint8_t, 64>, 32> &display;
@@ -22,4 +22,4 @@ class Renderer {
 
     void clear();
 };
-} // namespace chip8::renderer
+} // namespace chip8::frontend
