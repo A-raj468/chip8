@@ -2,7 +2,6 @@
 
 #include <chrono>
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <thread>
 
@@ -15,7 +14,6 @@ Chip8::Chip8()
 int Chip8::load_rom(const std::string &rom_path) {
     std::ifstream rom(rom_path, std::ios::binary);
     if (!rom.is_open()) {
-        std::cerr << "Failed to open file: " << rom_path << std::endl;
         return 1;
     }
     rom.seekg(0, std::ios::end);
@@ -46,7 +44,6 @@ int Chip8::run() {
                 break;
             }
             instruction::Instruction instruction = decoder.fetch();
-            /* std::cout << instruction.to_string() << std::endl; */
             cpu.execute(instruction, keyPressed);
         }
 
