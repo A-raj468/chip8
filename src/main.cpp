@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 
     std::string rom_path = argv[1];
 
-    chip8::chip8::Chip8 chip8;
+    chip8::chip8::Chip8System chip8;
     if (chip8.load_rom(rom_path) > 0) {
         std::cerr << "Failed to load rom: " << rom_path << std::endl;
         return 1;

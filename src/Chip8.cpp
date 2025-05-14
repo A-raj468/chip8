@@ -6,12 +6,11 @@
 #include <thread>
 
 namespace chip8::chip8 {
-Chip8::Chip8()
-    : decoder(memory, pc),
-      cpu(memory, pc, I, V, display, delay_timer, sound_timer),
+Chip8System::Chip8System()
+    : decoder(memory, pc), cpu(memory, pc, display, delay_timer, sound_timer),
       renderer(display) {}
 
-int Chip8::load_rom(const std::string &rom_path) {
+int Chip8System::load_rom(const std::string &rom_path) {
     std::ifstream rom(rom_path, std::ios::binary);
     if (!rom.is_open()) {
         return 1;
@@ -25,9 +24,9 @@ int Chip8::load_rom(const std::string &rom_path) {
     return 0;
 }
 
-int Chip8::init() { return renderer.init(); }
+int Chip8System::init() { return renderer.init(); }
 
-int Chip8::run() {
+int Chip8System::run() {
     const int target_fps = 60;
     const std::chrono::milliseconds frame_duration(1000 / target_fps);
     const int ips = 600;
@@ -47,7 +46,7 @@ int Chip8::run() {
             cpu.execute(instruction, keyPressed);
         }
 
-        update_timers();
+        tick();
         renderer.update();
 
         register_keys(event);
@@ -63,7 +62,7 @@ int Chip8::run() {
     return 0;
 }
 
-void Chip8::update_timers() {
+bool Chip8System::tick() {
     if (delay_timer > 0) {
         delay_timer--;
     }
@@ -72,11 +71,13 @@ void Chip8::update_timers() {
         sound_timer--;
         if (sound_timer == 0) {
             // Stop sound here
+            return true;
         }
     }
+    return false;
 }
 
-void Chip8::register_keys(SDL_Event &event) {
+void Chip8System::register_keys(SDL_Event &event) {
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
             running = false; // Exit the loop if the user closes the window

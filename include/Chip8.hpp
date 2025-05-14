@@ -10,14 +10,12 @@
 #include <string>
 
 namespace chip8::chip8 {
-class Chip8 {
+class Chip8System {
     static constexpr uint16_t MEMSIZE = 4096;
     static constexpr uint16_t ROM_START = 0x200;
 
     std::array<uint8_t, MEMSIZE> memory = {0};
     uint16_t pc = ROM_START;
-    uint16_t I = 0;
-    std::array<uint8_t, 16> V = {0};
     std::array<std::array<uint8_t, 64>, 32> display = {{{0}}};
     uint8_t delay_timer = 0;
     uint8_t sound_timer = 0;
@@ -29,11 +27,11 @@ class Chip8 {
 
     bool running = false;
 
-    void update_timers();
+    bool tick();
     void register_keys(SDL_Event &event);
 
   public:
-    Chip8();
+    Chip8System();
 
     int load_rom(const std::string &rom_path);
     int init();
