@@ -11,8 +11,10 @@ class Timer {
   public:
     Timer();
 
-    uint8_t get();
-    bool set(uint8_t val);
+    uint8_t get_delay();
+    uint8_t get_sound();
+    void set_delay(uint8_t val);
+    void set_sound(uint8_t val);
     bool tick();
 };
 

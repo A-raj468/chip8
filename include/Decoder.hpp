@@ -3,17 +3,18 @@
 
 #include <Constants.hpp>
 #include <Instruction.hpp>
-#include <array>
+#include <Memory.hpp>
+
 #include <cstdint>
 
 namespace chip8::core {
 class Decoder {
   private:
-    std::array<uint8_t, MEM_SIZE> &memory;
+    Memory &memory;
     uint16_t &pc;
 
   public:
-    Decoder(std::array<uint8_t, MEM_SIZE> &memory, uint16_t &pc);
+    Decoder(Memory &memory, uint16_t &pc);
 
     Instruction fetch();
     Instruction peek();

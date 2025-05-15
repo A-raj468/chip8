@@ -1,26 +1,26 @@
 #include <CPU.hpp>
+#include <DisplayBuffer.hpp>
 #include <Instruction.hpp>
+#include <Keypad.hpp>
+#include <Memory.hpp>
+#include <Timer.hpp>
+
 #include <cstdint>
 #include <cstdlib>
 
-namespace chip8::core {
-CPU::CPU(std::array<uint8_t, 4096> &memory, uint16_t &pc,
-         std::array<std::array<uint8_t, 64>, 32> &display, uint8_t &delay_timer,
-         uint8_t &sound_timer)
-    : memory(memory), pc(pc), display(display), delay_timer(delay_timer),
-      sound_timer(sound_timer) {}
+using namespace chip8::core;
 
-bool CPU::execute(const Instruction &instruction,
-                  const std::array<bool, 16> &keyPressed) {
+CPU::CPU(uint16_t &pc, Memory &memory, DisplayBuffer &display, Timer &timer)
+    : pc(pc), memory(memory), display(display), timer(timer) {}
+
+bool CPU::execute(const Instruction &instruction, const Keypad &keys) {
     switch (instruction.opp) {
     case OPP::CALL: {
         // Log warning
         break;
     }
     case OPP::DISPLAY_CLEAR: {
-        for (auto &row : display) {
-            row.fill(0);
-        }
+        display.clear();
         break;
     }
     case OPP::FLOW_RETURN: {
@@ -130,55 +130,51 @@ bool CPU::execute(const Instruction &instruction,
         int n = instruction.n;
         V[0xF] = 0;
         for (int i = 0; i < n; i++) {
-            uint8_t row = memory[I + i];
+            uint8_t row = memory.read(I + i);
             for (int j = 0; j < 8; j++) {
                 int screenX = (x + j) % 64;
                 int screenY = (y + i) % 32;
                 uint8_t pixel = (row >> (7 - j)) & 0x1;
-                if (pixel == 1 && display[screenY][screenX] == 1) {
+                uint8_t original = display.get_pixel(screenY, screenX);
+                if (pixel == 1 && original == 1) {
                     V[0xF] = 1;
                 }
-                display[screenY][screenX] ^= pixel;
+                display.set_pixel(screenX, screenY, original ^ pixel);
             }
         }
         break;
     }
     case OPP::KEY_EQ: {
-        if (keyPressed[V[instruction.X]]) {
+        if (keys.is_pressed(V[instruction.X])) {
             pc += 2;
         }
         break;
     }
     case OPP::KEY_NEQ: {
-        if (!keyPressed[V[instruction.X]]) {
+        if (!keys.is_pressed(V[instruction.X])) {
             pc += 2;
         }
         break;
     }
     case OPP::TIMER_GET: {
-        V[instruction.X] = delay_timer;
+        V[instruction.X] = timer.get_delay();
         break;
     }
     case OPP::KEY_SET: {
-        int i = 0;
-        for (i = 0; i < 16; i++) {
-            if (keyPressed[i]) {
-                break;
-            }
-        }
-        if (i < 16) {
-            V[instruction.X] = i;
+        uint8_t key = keys.get_pressed();
+        if (key < 16) {
+            V[instruction.X] = key;
         } else {
             pc -= 2;
         }
         break;
     }
     case OPP::TIMER_SET: {
-        delay_timer = V[instruction.X];
+        timer.set_delay(V[instruction.X]);
         break;
     }
     case OPP::SOUND_SET: {
-        sound_timer = V[instruction.X];
+        timer.set_sound(V[instruction.X]);
         break;
     }
     case OPP::MEM_ADD: {
@@ -192,20 +188,20 @@ bool CPU::execute(const Instruction &instruction,
     }
     case OPP::BCD: {
         int value = V[instruction.X];
-        memory[I] = value / 100;
-        memory[I + 1] = (value / 10) % 10;
-        memory[I + 2] = value % 10;
+        memory.write(I, value / 100);
+        memory.write(I + 1, (value / 10) % 10);
+        memory.write(I + 2, value % 10);
         break;
     }
     case OPP::MEM_DUMP: {
         for (int i = 0; i <= instruction.X; i++) {
-            memory[I + i] = V[i];
+            memory.write(I + i, V[i]);
         }
         break;
     }
     case OPP::MEM_LOAD: {
         for (int i = 0; i <= instruction.X; i++) {
-            V[i] = memory[I + i];
+            V[i] = memory.read(I + i);
         }
         break;
     }
@@ -220,4 +216,3 @@ bool CPU::execute(const Instruction &instruction,
     }
     return true;
 }
-} // namespace chip8::core

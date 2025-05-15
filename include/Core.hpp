@@ -26,7 +26,6 @@ class Core {
   public:
     Core();
 
-    int init();
     int load_rom(const std::string &rom_path);
     int step();
     int tick();

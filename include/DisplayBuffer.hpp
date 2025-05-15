@@ -15,7 +15,7 @@ class DisplayBuffer {
 
     void clear();
     bool set_pixel(uint8_t x, uint8_t y, uint8_t val);
-    bool get_pixel(uint8_t x, uint8_t y) const;
+    uint8_t get_pixel(uint8_t x, uint8_t y) const;
     const std::array<std::array<uint8_t, DISPLAY_COLS>, DISPLAY_ROWS> &
     data() const;
 };
