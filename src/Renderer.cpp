@@ -23,8 +23,8 @@ bool Renderer::init() {
 
     // Create the SDL window
     window = SDL_CreateWindow("CHIP-8 Emulator", SDL_WINDOWPOS_UNDEFINED,
-                              SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT,
-                              SDL_WINDOW_SHOWN);
+                              SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH,
+                              WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     if (!window) {
         SDL_Quit();
         return false; // Window creation failed
