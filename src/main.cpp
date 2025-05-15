@@ -1,4 +1,4 @@
-#include <Chip8.hpp>
+#include <Driver.hpp>
 
 #include <iostream>
 #include <string>
@@ -11,18 +11,12 @@ int main(int argc, char *argv[]) {
 
     std::string rom_path = argv[1];
 
-    chip8::core::Chip8System chip8;
-    if (chip8.load_rom(rom_path) > 0) {
-        std::cerr << "Failed to load rom: " << rom_path << std::endl;
+    chip8::frontend::Driver driver(rom_path);
+    if (driver.init()) {
+        std::cerr << "Driver Initialization Failed!\n";
         return 1;
     }
-
-    if (!chip8.init()) {
-        std::cerr << "Failed to initialize SDL!" << std::endl;
-        return 1;
-    }
-
-    chip8.run();
+    driver.run();
 
     return 0;
 }

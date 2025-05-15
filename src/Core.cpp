@@ -3,9 +3,9 @@
 #include <Core.hpp>
 #include <Decoder.hpp>
 
-#include <array>
 #include <cstdint>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -41,6 +41,7 @@ int Core::step() {
         return 1;
     }
     Instruction instruction = decoder.fetch();
+    // std::cerr << instruction.to_string() << std::endl;
     cpu.execute(instruction, keypad);
     return 0;
 }
