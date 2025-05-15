@@ -1,10 +1,10 @@
+#include <Constants.hpp>
 #include <Renderer.hpp>
 
+#include <cstdint>
+
 namespace chip8::frontend {
-Renderer::Renderer(std::array<std::array<uint8_t, 64>, 32> &display)
-    : display(display), window(nullptr), renderer(nullptr) {
-    clear();
-}
+Renderer::Renderer() {}
 
 Renderer::~Renderer() {
     if (renderer) {
@@ -22,9 +22,9 @@ bool Renderer::init() {
     }
 
     // Create the SDL window
-    window =
-        SDL_CreateWindow("CHIP-8 Emulator", SDL_WINDOWPOS_UNDEFINED,
-                         SDL_WINDOWPOS_UNDEFINED, 640, 320, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("CHIP-8 Emulator", SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT,
+                              SDL_WINDOW_SHOWN);
     if (!window) {
         SDL_Quit();
         return false; // Window creation failed
@@ -41,22 +41,19 @@ bool Renderer::init() {
     return true;
 }
 
-void Renderer::update() {
-    // Set pixel size (adjust as needed)
-    const int pixelSize = 10;
-
+void Renderer::render(const std::array<std::array<uint8_t, DISPLAY_COLS>,
+                                       DISPLAY_ROWS> &display) {
     // Clear the screen before drawing new pixels
     SDL_RenderClear(renderer);
 
     // Iterate over each pixel in the display array
-    for (int y = 0; y < 32; ++y) {
-        for (int x = 0; x < 64; ++x) {
+    for (int y = 0; y < DISPLAY_ROWS; ++y) {
+        for (int x = 0; x < DISPLAY_COLS; ++x) {
             // Set the color (white for on, black for off)
             SDL_SetRenderDrawColor(renderer, display[y][x] * 255, 0, 0, 255);
 
             // Draw a filled rectangle for each pixel
-            SDL_Rect rect = {x * pixelSize, y * pixelSize, pixelSize,
-                             pixelSize};
+            SDL_Rect rect = {x * SCALE, y * SCALE, SCALE, SCALE};
             SDL_RenderFillRect(renderer, &rect);
         }
     }
@@ -65,10 +62,4 @@ void Renderer::update() {
     SDL_RenderPresent(renderer);
 }
 
-void Renderer::clear() {
-    // Set all pixels to 0 (off)
-    for (auto &row : display) {
-        row.fill(0);
-    }
-}
 } // namespace chip8::frontend

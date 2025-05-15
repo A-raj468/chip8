@@ -135,7 +135,7 @@ bool CPU::execute(const Instruction &instruction, const Keypad &keys) {
                 int screenX = (x + j) % 64;
                 int screenY = (y + i) % 32;
                 uint8_t pixel = (row >> (7 - j)) & 0x1;
-                uint8_t original = display.get_pixel(screenY, screenX);
+                uint8_t original = display.get_pixel(screenX, screenY);
                 if (pixel == 1 && original == 1) {
                     V[0xF] = 1;
                 }

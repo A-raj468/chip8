@@ -9,6 +9,7 @@
 #include <Memory.hpp>
 #include <Timer.hpp>
 
+#include <array>
 #include <cstdint>
 #include <string>
 
@@ -29,5 +30,8 @@ class Core {
     int load_rom(const std::string &rom_path);
     int step();
     bool tick();
+
+    const DisplayBuffer &get_display() const;
+    void register_keys(const std::array<bool, NUM_KEYS> &input_buffer);
 };
 } // namespace chip8::core

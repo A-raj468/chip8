@@ -2,6 +2,7 @@
 #include <Constants.hpp>
 #include <Core.hpp>
 #include <Decoder.hpp>
+#include <DisplayBuffer.hpp>
 
 #include <cstdint>
 #include <fstream>
@@ -47,3 +48,11 @@ int Core::step() {
 }
 
 bool Core::tick() { return timer.tick(); }
+
+const DisplayBuffer &Core::get_display() const { return display; }
+
+void Core::register_keys(const std::array<bool, NUM_KEYS> &input_buffer) {
+    for (int i = 0; i < NUM_KEYS; i++) {
+        keypad.set_state(i, input_buffer[i]);
+    }
+}
