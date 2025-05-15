@@ -35,3 +35,14 @@ int Core::load_rom(const std::string &rom_path) {
     }
     return 0;
 }
+
+int Core::step() {
+    if (pc >= MEM_SIZE) {
+        return 1;
+    }
+    Instruction instruction = decoder.fetch();
+    cpu.execute(instruction, keypad);
+    return 0;
+}
+
+bool Core::tick() { return timer.tick(); }

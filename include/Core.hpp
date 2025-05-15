@@ -28,6 +28,6 @@ class Core {
 
     int load_rom(const std::string &rom_path);
     int step();
-    int tick();
+    bool tick();
 };
 } // namespace chip8::core
